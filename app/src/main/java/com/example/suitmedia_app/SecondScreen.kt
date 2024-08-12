@@ -21,7 +21,6 @@ class SecondScreen : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         val nameTextView = findViewById<TextView>(R.id.nameTextView)
-        val selectedUserNameTextView = findViewById<TextView>(R.id.selectedUserNameTextView)
         val chooseUserButton = findViewById<Button>(R.id.chooseUserButton)
 
         val name = intent.getStringExtra("name")
