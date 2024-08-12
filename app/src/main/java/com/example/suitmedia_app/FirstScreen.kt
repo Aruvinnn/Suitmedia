@@ -1,88 +1,49 @@
 package com.example.suitmedia_app
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 
-class MainActivity : ComponentActivity() {
+class FirstScreen : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "first_screen") {
-                composable("first_screen") { FirstScreen(navController) }
-                composable("second_screen/{name}") { backStackEntry ->
-                    SecondScreen(
-                        navController,
-                        backStackEntry.arguments?.getString("name") ?: ""
-                    )
-                }
-                composable("third_screen") { ThirdScreen(navController) }
-            }
+        setContentView(R.layout.activity_first)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
+
+        val nameInput = findViewById<EditText>(R.id.nameInput)
+        val palindromeInput = findViewById<EditText>(R.id.palindromeInput)
+        val checkButton = findViewById<Button>(R.id.checkButton)
+        val nextButton = findViewById<Button>(R.id.nextButton)
+
+        checkButton.setOnClickListener {
+            val inputText = palindromeInput.text.toString()
+            Log.d("InputText", "Text from EditText: '$inputText'")
+            val isPalindrome = isPalindrome(inputText)
+            val message = if (isPalindrome) "isPalindrome" else "notPalindrome"
+            Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
         }
-    }
-}
 
-@Composable
-fun FirstScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf(TextFieldValue("")) }
-    var sentence by remember { mutableStateOf(TextFieldValue("")) }
-    var showDialog by remember { mutableStateOf(false) }
-    var isPalindrome by remember { mutableStateOf(false) }
-
-    if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
-            Surface {
-                Text(
-                    text = if (isPalindrome) "Palindrome" else "Not Palindrome",
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+        nextButton.setOnClickListener {
+            val intent = Intent(this, SecondScreen::class.java)
+            intent.putExtra("name", nameInput.text.toString())
+            startActivity(intent)
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(
-            value = sentence,
-            onValueChange = { sentence = it },
-            label = { Text("Palindrome") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            isPalindrome = sentence.text == sentence.text.reversed()
-            showDialog = true
-        }) {
-            Text("Check")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            navController.navigate("second_screen/${name.text}")
-        }) {
-            Text("Next")
-        }
+    private fun isPalindrome(text: String): Boolean {
+        val cleanedText = text.replace("[^a-zA-Z0-9]".toRegex(), "").lowercase()
+        Log.d("PalindromeCheck", "Cleaned: '$cleanedText', Reversed: '${cleanedText.reversed()}'")
+        return cleanedText == cleanedText.reversed()
     }
 }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,11 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Suitmediaapp"
         tools:targetApi="31">
+        <activity android:name=".ThirdScreen"
+            android:label="@string/third_screen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity android:name=".SecondScreen"
+            android:label="@string/second_screen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".FirstScreen"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Suitmediaapp">
+            android:label="@string/first_screen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
